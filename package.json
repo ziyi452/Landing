@@ -1,0 +1,17 @@
+{
+  "name": "treehole-backend-vercel",
+  "version": "1.0.0",
+  "description": "树洞功能后端 - Vercel Serverless Functions",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel deploy --prod"
+  },
+  "devDependencies": {
+    "vercel": "^37.0.0"
+  }
+}
