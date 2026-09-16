@@ -1,6 +1,7 @@
 // GET /api/treehole/comments  读取评论
 // POST /api/treehole/comments  发表评论
 import { callBitableApi, TABLES, sendJson } from '../_lib/feishu.js';
+import { parseBody } from '../_lib/body-parser.js';
 
 export default async function handler(req, res) {
   try {
@@ -33,7 +34,8 @@ async function handleGet(req, res) {
 }
 
 async function handlePost(req, res) {
-  const { postId, userId, userName, content, commentType } = req.body || {};
+  const body = await parseBody(req);
+  const { postId, userId, userName, content, commentType } = body;
   if (!postId || !content) { sendJson(res, 400, { success: false, message: '缺少必要参数' }); return; }
   const now = Date.now();
   await callBitableApi('POST', `tables/${TABLES.comments}/records`, {
