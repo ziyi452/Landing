@@ -45,7 +45,7 @@ async function handlePost(req, res) {
   const data = await callBitableApi('GET', `tables/${USER_PROGRESS_TABLE_ID}/records?page_size=100`);
   const record = (data.items || []).find((r) => r.fields['用户ID'] === userId);
   if (!record) { sendJson(res, 404, { success: false, message: '用户不存在' }); return; }
-  const now = new Date().toISOString();
+  const now = Date.now();
   const fields = {
     '当前阶段': progressData.currentStage || 1,
     '已完成任务数': progressData.completedCount || 0,
