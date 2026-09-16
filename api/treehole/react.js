@@ -33,7 +33,7 @@ export default async function handler(req, res) {
         await callBitableApi('DELETE', `tables/${TABLES.reactions}/records/${record.record_id}`);
       }
       const postData = await callBitableApi('GET', `tables/${TABLES.posts}/records/${postId}`);
-      const currentValue = postData.record?.fields?.[mapping.field] || 0;
+      const currentValue = Number(postData.record?.fields?.[mapping.field]) || 0;
       await callBitableApi('PUT', `tables/${TABLES.posts}/records/${postId}`, {
         fields: { [mapping.field]: Math.max(0, currentValue - 1) },
       });
@@ -44,7 +44,7 @@ export default async function handler(req, res) {
         fields: { '树洞ID': postId, '用户ID': userId, '互动类型': mapping.label, '互动时间': now },
       });
       const postData = await callBitableApi('GET', `tables/${TABLES.posts}/records/${postId}`);
-      const currentValue = postData.record?.fields?.[mapping.field] || 0;
+      const currentValue = Number(postData.record?.fields?.[mapping.field]) || 0;
       await callBitableApi('PUT', `tables/${TABLES.posts}/records/${postId}`, {
         fields: { [mapping.field]: currentValue + 1 },
       });
