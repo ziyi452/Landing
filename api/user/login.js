@@ -24,9 +24,10 @@ export default async function handler(req, res) {
     if (existingUser) {
       sendJson(res, 200, { success: true, userId, name, joinDate, isNewUser: false, message: `欢迎回来，${name}！` });
     } else {
-      const now = new Date().toISOString();
+      const now = Date.now();
+      const joinDateTs = new Date(joinDate).getTime();
       const fields = {
-        '用户ID': userId, '姓名': name, '入职日期': joinDate,
+        '用户ID': userId, '姓名': name, '入职日期': joinDateTs,
         '当前阶段': 1, '已完成任务数': 0, '任务进度': '{}',
         '花园数据': '{}', '心情记录': '[]', '日记数据': '[]',
         '积分': 0, '连续打卡天数': 0, '最后更新时间': now,
