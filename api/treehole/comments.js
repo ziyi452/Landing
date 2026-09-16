@@ -43,7 +43,7 @@ async function handlePost(req, res) {
       '评论者ID': userId || 'anonymous', '评论时间': now, '评论类型': commentType || '公开' },
   });
   const postData = await callBitableApi('GET', `tables/${TABLES.posts}/records/${postId}`);
-  const currentCount = postData.record?.fields?.['评论数'] || 0;
+  const currentCount = Number(postData.record?.fields?.['评论数']) || 0;
   await callBitableApi('PUT', `tables/${TABLES.posts}/records/${postId}`, {
     fields: { '评论数': currentCount + 1 },
   });
