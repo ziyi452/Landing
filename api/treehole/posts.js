@@ -21,7 +21,7 @@ export default async function handler(req, res) {
 async function handleGet(req, res) {
   const data = await callBitableApi(
     'GET',
-    `tables/${TABLES.posts}/records?page_size=100&sort=[{"field_name":"发布时间","desc":true}]`
+    `tables/${TABLES.posts}/records?page_size=100`
   );
   const records = data.items || [];
   const posts = records.map((r) => ({
@@ -38,6 +38,8 @@ async function handleGet(req, res) {
     inspired: r.fields['启发数'] || 0,
     commentCount: r.fields['评论数'] || 0,
   }));
+  // 按发布时间倒序排序（在代码中排序，不依赖API）
+  posts.sort((a, b) => b.timestamp - a.timestamp);
   sendJson(res, 200, { success: true, posts });
 }
 
