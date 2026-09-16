@@ -1,13 +1,27 @@
 // POST /api/treehole/react  —  切换互动
 import { callBitableApi, TABLES, REACTION_FIELD_MAP, sendJson } from '../_lib/feishu.js';
+import { parseBody } from '../_lib/body-parser.js';
 
 export default async function handler(req, res) {
   try {
-    if (req.method !== 'POST') { sendJson(res, 405, { success: false, message: '仅支持 POST 方法' }); return; }
-    const { postId, userId, reactionType, action } = req.body || {};
-    if (!postId || !userId || !reactionType) { sendJson(res, 400, { success: false, message: '缺少必要参数' }); return; }
+    if (req.method !== 'POST') {
+      sendJson(res, 405, { success: false, message: '仅支持 POST 方法' });
+      return;
+    }
+
+    const body = await parseBody(req);
+    const { postId, userId, reactionType, action } = body;
+    if (!postId || !userId || !reactionType) {
+      sendJson(res, 400, { success: false, message: '缺少必要参数' });
+      return;
+    }
+
     const mapping = REACTION_FIELD_MAP[reactionType];
-    if (!mapping) { sendJson(res, 400, { success: false, message: '无效的互动类型' }); return; }
+    if (!mapping) {
+      sendJson(res, 400, { success: false, message: '无效的互动类型' });
+      return;
+    }
+
     if (action === 'remove') {
       const reactionData = await callBitableApi('GET', `tables/${TABLES.reactions}/records?page_size=200`);
       const record = (reactionData.items || []).find(
@@ -15,7 +29,9 @@ export default async function handler(req, res) {
           (r.fields['互动类型'] === mapping.label ||
             (Array.isArray(r.fields['互动类型']) && r.fields['互动类型'][0] === mapping.label))
       );
-      if (record) await callBitableApi('DELETE', `tables/${TABLES.reactions}/records/${record.record_id}`);
+      if (record) {
+        await callBitableApi('DELETE', `tables/${TABLES.reactions}/records/${record.record_id}`);
+      }
       const postData = await callBitableApi('GET', `tables/${TABLES.posts}/records/${postId}`);
       const currentValue = postData.record?.fields?.[mapping.field] || 0;
       await callBitableApi('PUT', `tables/${TABLES.posts}/records/${postId}`, {
