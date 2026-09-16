@@ -1,3 +1,4 @@
+import { parseBody } from '../_lib/body-parser.js';
 // GET /api/treehole/posts  —  读取所有树洞
 // POST /api/treehole/posts —  发布一条树洞
 import { callBitableApi, TABLES, sendJson } from '../_lib/feishu.js';
