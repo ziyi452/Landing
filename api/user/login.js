@@ -1,5 +1,6 @@
 // POST /api/user/login  —  登录/注册用户
 import { callBitableApi, sendJson } from '../_lib/feishu.js';
+import { parseBody } from '../_lib/body-parser.js';
 
 const USER_PROGRESS_TABLE_ID = process.env.USER_PROGRESS_TABLE_ID || '';
 
@@ -13,7 +14,8 @@ export default async function handler(req, res) {
       sendJson(res, 500, { success: false, message: '用户进度表未配置' });
       return;
     }
-    const { name, joinDate } = req.body || {};
+    const body = await parseBody(req);
+    const { name, joinDate } = body;
     if (!name || !joinDate) {
       sendJson(res, 400, { success: false, message: '缺少 name 或 joinDate 参数' });
       return;
