@@ -1,6 +1,7 @@
 // GET /api/user/progress?userId=xxx  获取用户进度
 // POST /api/user/progress  保存用户进度
 import { callBitableApi, sendJson } from '../_lib/feishu.js';
+import { parseBody } from '../_lib/body-parser.js';
 
 const USER_PROGRESS_TABLE_ID = process.env.USER_PROGRESS_TABLE_ID || '';
 
@@ -40,7 +41,8 @@ async function handleGet(req, res) {
 }
 
 async function handlePost(req, res) {
-  const { userId, progressData } = req.body || {};
+  const body = await parseBody(req);
+  const { userId, progressData } = body;
   if (!userId || !progressData) { sendJson(res, 400, { success: false, message: '缺少参数' }); return; }
   const data = await callBitableApi('GET', `tables/${USER_PROGRESS_TABLE_ID}/records?page_size=100`);
   const record = (data.items || []).find((r) => r.fields['用户ID'] === userId);
